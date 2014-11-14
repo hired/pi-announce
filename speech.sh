@@ -21,5 +21,5 @@ done
 for key in "${!SHORT[@]}"
   do
     NEXTURL=$(echo ${SHORT[$key]} | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')
-    mpg123 -q "http://tts-api.com/tts.mp3?q=$NEXTURL"
+    mpg123 -f 50000 -q "http://tts-api.com/tts.mp3?q=$NEXTURL"
 done

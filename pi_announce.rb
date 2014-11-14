@@ -67,7 +67,7 @@ private
   def play_local(filename)
     case File.extname(filename)
     when '.mp3' then
-      system("mpg123 -f 50000 -q \"#{filename}\"")
+      system("mpg123 -f 40000 -q \"#{filename}\"")
     when '.wav' then
       system("aplay \"#{filename}\"")
     end
