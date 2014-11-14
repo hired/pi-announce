@@ -4,6 +4,7 @@ Bundler.require
 require './pi_announce'
 require 'rspec'
 require 'rack/test'
+require 'shellwords'
 
 describe 'Bot Announce' do
   include Rack::Test::Methods
@@ -30,6 +31,7 @@ describe 'Bot Announce' do
     post '/announce'
     last_response.status.should == 400
   end
+
 
 
   describe '#play' do
@@ -69,8 +71,25 @@ describe 'Bot Announce' do
     end
   end
 
-  it 'plays sound from url' do
+  describe '#speak' do
+    let(:app_instance) { app.new! }
 
+    before do
+      app_instance.stub(:system)
+    end
+
+    it 'a simple text string' do
+      expect(app_instance).to receive(:system).with("./speech.sh Hello\\ world")
+      app_instance.send(:speak, "Hello world")
+    end
+
+    it 'a complex text string' do
+      text = 'Hello, world!  I once heard a person ask "what\'s the point of all these tests?"  The Next day Nate had him beheaded...  What the @#$%~&?=:*!  This is the point at which we fall back to lorem ipsum.  Bacon ipsum dolor amet tongue biltong brisket strip steak capicola. Meatball flank jerky, pastrami venison cow brisket. Pancetta sirloin ground round alcatra. Fatback prosciutto venison drumstick. Beef ribs andouille doner rump.'
+      escaped_text = Shellwords.escape(text)
+      expect(app_instance).to receive(:system).with("./speech.sh #{escaped_text}")
+      app_instance.send(:speak, 'Hello, world!  I once heard a person ask "what\'s the point of all these tests?"  The Next day Nate had him beheaded...  What the @#$%~&?=:*!  This is the point at which we fall back to lorem ipsum.  Bacon ipsum dolor amet tongue biltong brisket strip steak capicola. Meatball flank jerky, pastrami venison cow brisket. Pancetta sirloin ground round alcatra. Fatback prosciutto venison drumstick. Beef ribs andouille doner rump.')
+    end
   end
 
-end
+
+  end

@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'net/http'
+require 'shellwords'
 
 class PiAnnounce < Sinatra::Application
 
@@ -28,6 +29,8 @@ class PiAnnounce < Sinatra::Application
       case instruction['cmd']
       when 'play'
         play instruction['url']
+      when 'speak'
+        speak instruction['text']
       end
     end
 
@@ -35,6 +38,11 @@ class PiAnnounce < Sinatra::Application
   end
 
 private
+
+  def speak(text)
+    escaped_text = Shellwords.escape(text)
+    system("./speech.sh #{escaped_text}")
+  end
 
   def play(url)
     hash = Digest::MD5.hexdigest(url)
