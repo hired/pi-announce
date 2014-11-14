@@ -32,7 +32,13 @@ describe 'Bot Announce' do
     last_response.status.should == 400
   end
 
+  it 'fails when commands are invalid' do
+    post '/announce', [{cmd: 'im not real', at_all: 'srsly'}].to_json, { "CONTENT_TYPE" => "application/json" }
+    last_response.status.should == 400
 
+    post '/announce', [{cmd: 'speak', url: 'fail.com'}].to_json, { "CONTENT_TYPE" => "application/json" }
+    last_response.status.should == 400
+  end
 
   describe '#play' do
     let(:sound_hash) { Digest::MD5.hexdigest(sound) }

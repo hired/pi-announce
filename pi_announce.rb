@@ -28,9 +28,13 @@ class PiAnnounce < Sinatra::Application
     request_payload.each do |instruction|
       case instruction['cmd']
       when 'play'
+        return status 400 if !instruction['url']
         play instruction['url']
       when 'speak'
+        return status 400 if !instruction['text']
         speak instruction['text']
+      else
+        return status 400
       end
     end
 
